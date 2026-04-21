@@ -1,0 +1,26 @@
+// src/app/admin/actualites/page.tsx
+export const dynamic = 'force-dynamic'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import AdminSidebar from '@/components/admin/AdminSidebar'
+import ActualitesAdminClient from './ActualitesAdminClient'
+import type { Actualite } from '@/types/database'
+
+export const metadata = { title: 'Admin – Actualités' }
+
+export default async function AdminActualitesPage() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+  const { data: p } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (!['admin', 'bureau'].includes((p as any)?.role ?? '')) redirect('/')
+  const { data } = await supabase.from('actualites').select('*').order('created_at', { ascending: false })
+  return (
+    <div className="flex min-h-screen" style={{ background: 'var(--off-white)' }}>
+      <AdminSidebar active="actualites" />
+      <main className="flex-1 p-6 overflow-auto">
+        <ActualitesAdminClient actualites={(data ?? []) as Actualite[]} />
+      </main>
+    </div>
+  )
+}
