@@ -9,8 +9,8 @@ import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const { slug } = params
   const supabase = createClient()
   const { data } = await supabase
     .from('actualites')
@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: (data as any)?.titre ?? 'Article', description: (data as any)?.extrait }
 }
 
-export default async function ActualiteDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default async function ActualiteDetailPage({ params }: { params: { slug: string } }) {
+  const { slug } = params
   const supabase = createClient()
   const { data } = await supabase
     .from('actualites')
