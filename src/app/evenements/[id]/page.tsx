@@ -9,8 +9,8 @@ import { fr } from 'date-fns/locale'
 import InscriptionForm from './InscriptionForm'
 import Link from 'next/link'
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const { id } = params
   const supabase = createClient()
   const { data } = await supabase
     .from('evenements')
@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: (data as any)?.titre ?? 'Événement' }
 }
 
-export default async function EvenementDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export default async function EvenementDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
